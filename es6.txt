@@ -1,0 +1,15 @@
+1. let
+2. const
+3. array destructuring
+4. rest operator (array)
+5. spread operator (array)
+6. object destructuring
+7. rest operator (object)
+8. spread operator (object)
+9. default arguments
+10. arrow functions
+11. template strings
+11. classes
+12. object construction enhancements
+
+http://es6-features.org

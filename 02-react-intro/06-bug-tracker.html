@@ -10,7 +10,7 @@
 		body{
 			margin-left: 50px;
 		}
-		section{
+		#root section{
 			margin-bottom: 10px;
 		}
 		.stats, .bugname{
@@ -49,39 +49,117 @@
 		7. Persist the bugs in the server
 		8. Make the bugs accessible using unique urls
 	</script>
+	<script type="text/babel">
+		class EventEmitter{
+			_listeners = [];
+
+			subscribe(listenerFn){
+				this._listeners.push(listenerFn);
+			}
+
+			triggerChange(){
+				this._listeners.forEach(listenerFn => listenerFn());
+			}
+		}
+
+		class BugsCollectionModel extends EventEmitter{
+			_list = [];
+
+			constructor(){
+				super();
+			}
+			
+			getAll(){
+				return [...this._list];
+			}
+			
+			addNew(bugName){
+				let newBug = {
+					name : bugName,
+					isClosed : false
+				};
+				this._list.push(newBug);
+				this.triggerChange();
+			}
+		}
+
+		class BugItem extends React.Component{
+			onBugNameClick = () => {
+				console.log('A bug is being toggled', this.props.bug);
+			}
+			render = () => {
+				let { bug } = this.props;
+				return(
+					<li>
+						<span className="bugname" onClick={this.onBugNameClick}>
+							{ JSON.stringify(bug) }
+						</span>
+					</li>
+				)
+			}
+		}
+		class BugTracker extends React.Component{
+
+			state = { newBugName : ''};
+
+			onAddNewClick = () => {
+				this.props.collection.addNew(this.state.newBugName);
+			}
+			
+			
+			
+			render = () => {
+				let { collection } = this.props,
+					bugs = collection.getAll(),
+					bugList = bugs.map((bug, index) => (
+						<BugItem bug={bug} key={index}/>
+					));
+				
+				return(
+					<React.Fragment>
+						<section className="stats">
+							<span className="closed">1</span>
+							<span> / </span>
+							<span>{bugs.length}</span>
+						</section>
+						<section className="sort">
+							<label htmlFor="">Order By :</label>
+							<select>
+								<option value=""></option>
+								<option value=""></option>
+							</select>
+							<label htmlFor="">Descending ? :</label>
+							<input type="checkbox" />
+						</section>
+						<section className="edit">
+							<label htmlFor="">Bug Name :</label>
+							<input type="text" onChange={ evt => this.setState({ newBugName : evt.target.value}) }/>
+							<input type="button" value="Add New" onClick={this.onAddNewClick}/>
+						</section>
+						<section className="list">
+							<ol>
+								{bugList}
+							</ol>
+							<input type="button" value="Remove Closed" />
+						</section>
+					</React.Fragment>
+				)
+			}
+		}
+
+		let bugsCollection = new BugsCollectionModel();
+		function renderApp(){
+			ReactDOM.render(<BugTracker collection={bugsCollection}/>,
+				document.getElementById('root'));
+		}
+		bugsCollection.subscribe(renderApp);
+		renderApp();
+
+	</script>
 </head>
 <body>
 	<h1>Bug Tracker</h1>
 	<hr>
-	<section class="stats">
-		<span class="closed">1</span>
-		<span> / </span>
-		<span>2</span>
-	</section>
-	<section class="sort">
-		<label for="">Order By :</label>
-		<select name="" id="">
-			<option value=""></option>
-			<option value=""></option>
-		</select>
-		<label for="">Descending ? :</label>
-		<input type="checkbox" name="" id="">
-	</section>
-	<section class="edit">
-		<label for="">Bug Name :</label>
-		<input type="text" name="" id="">
-		<input type="button" value="Add New">
-	</section>
-	<section class="list">
-		<ol>
-			<li>
-				<span class="bugname">[This is bug - 1]</span></li>
-			<li>
-				<span class="bugname closed">
-					[This is bug - 2]</span>
-			</li>
-		</ol>
-		<input type="button" value="Remove Closed">
-	</section>
+	<div id="root"></div>
 </body>
 </html>

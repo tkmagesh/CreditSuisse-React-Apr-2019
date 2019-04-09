@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Products</title>
+	<script src="react.development.js"></script>
+	<script src="react-dom.development.js"></script>
+	<script src="babel.min.js"></script>
+	<script type="text/babel">
+		class Products extends React.Component{
+			state = { productList : [] };
+			newProductName = '';
+
+			onBtnAddNewClick = () => {
+				let productList = this.state.productList;
+				productList.push(this.newProductName);
+				this.setState({productList : productList });	
+			}
+			render = () => {
+			
+				let productItemList = this.state.productList.map((product, index) => (<li key={index}>{product}</li>));
+				return(
+					<div>
+						<h1>Products</h1>
+						<hr/>
+						<label>Product :</label>
+						<input type="text" onChange={ evt => this.newProductName = evt.target.value } />
+						<input type="button" value="Add New" onClick={this.onBtnAddNewClick}/>
+						<ol>
+							{productItemList}
+						</ol>
+					</div>
+				)
+			}
+		}
+
+		class ProductCount extends React.Component{
+			render = () => {
+				let { data } = this.props;
+				return(
+					<div>{data}</div>
+				)
+			}
+		}
+		ReactDOM.render(
+			<div>
+				<ProductCount data="0"/>
+				<Products/>
+			</div>,
+			document.getElementById('root'));
+	</script>
+</head>
+<body>
+	<div id="root">
+		
+	</div>
+</body>
+</html>

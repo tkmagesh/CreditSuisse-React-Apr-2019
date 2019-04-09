@@ -38,10 +38,11 @@
 
 		class Products extends React.Component{
 			
-			newProductName = '';
+			state={ newProductName : '' };
 
 			onBtnAddNewClick = () => {
-				this.props.model.addNew(this.newProductName);
+				this.props.model.addNew(this.state.newProductName);
+				this.setState({newProductName : ''});
 			}
 			render = () => {
 			
@@ -51,7 +52,7 @@
 						<h1>Products</h1>
 						<hr/>
 						<label>Product :</label>
-						<input type="text" onChange={ evt => this.newProductName = evt.target.value } />
+						<input type="text" onChange={ evt => this.setState({ newProductName : evt.target.value }) } value={this.state.newProductName}/>
 						<input type="button" value="Add New" onClick={this.onBtnAddNewClick}/>
 						<ol>
 							{productItemList}

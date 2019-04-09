@@ -74,19 +74,34 @@
 			}
 			
 			addNew(bugName){
-				let newBug = {
-					name : bugName,
-					isClosed : false
-				};
+				let newBug = new BugModel(bugName);
 				this._list.push(newBug);
+				this.triggerChange();
+			}
+
+		}
+
+		class BugModel extends EventEmitter{
+			name = '';
+			isClosed = false;
+
+			constructor(name){
+				this.name = name;
+			}
+
+			toggle(){
+				this.isClosed = !this.isClosed;
 				this.triggerChange();
 			}
 		}
 
 		class BugItem extends React.Component{
+
 			onBugNameClick = () => {
-				console.log('A bug is being toggled', this.props.bug);
+				this.props.bug.toggle();
+				console.log(this.props.bug);
 			}
+
 			render = () => {
 				let { bug } = this.props;
 				return(
@@ -98,6 +113,7 @@
 				)
 			}
 		}
+
 		class BugTracker extends React.Component{
 
 			state = { newBugName : ''};
@@ -106,19 +122,18 @@
 				this.props.collection.addNew(this.state.newBugName);
 			}
 			
-			
-			
 			render = () => {
 				let { collection } = this.props,
 					bugs = collection.getAll(),
 					bugList = bugs.map((bug, index) => (
-						<BugItem bug={bug} key={index}/>
-					));
+						<BugItem bug={bug} key={index} toggle={collection.toggle}/>
+					)),
+					closedCount = bugs.reduce((result, bug) => bug.isClosed ? ++result : result, 0);
 				
 				return(
 					<React.Fragment>
 						<section className="stats">
-							<span className="closed">1</span>
+							<span className="closed">{closedCount}</span>
 							<span> / </span>
 							<span>{bugs.length}</span>
 						</section>

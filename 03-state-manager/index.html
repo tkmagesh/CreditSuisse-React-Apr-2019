@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>State Manager Demo</title>
+	<script src="state-manager.js"></script>
+	<script src="react.development.js"></script>
+	<script src="react-dom.development.js"></script>
+	<script src="babel.min.js"></script>
+	<script type="text/babel">
+		
+
+		function spinnerReducer(currentState = 0, action){
+			if (action.type === 'INCREMENT') return ++currentState;
+			if (action.type === 'DECREMENT') return --currentState;
+			return currentState;
+		}
+
+		
+
+		class Spinner extends React.Component{
+			
+			inc_action = { type : 'INCREMENT' };
+			dec_action = { type : 'DECREMENT' };
+
+			onDecrementClick = () => {
+				this.props.store.dispatch(this.dec_action);
+			}
+			onIncrementClick = () => {
+				this.props.store.dispatch(this.inc_action);
+			}
+			render(){
+				let spinnerValue = this.props.store.getState();
+				return (
+					<div>
+						<input type="button" value="Decrement" onClick={this.onDecrementClick} />
+						<span> [ {spinnerValue} ] </span>
+						<input type="button" value="Increment" onClick={this.onIncrementClick} />
+					</div>
+				);
+			}
+		}
+
+		let store = SM.createStore(spinnerReducer);
+
+		function renderApp(){
+			ReactDOM.render(<Spinner store={store}/>,
+				document.getElementById('root'));
+		}
+		renderApp();
+		store.subscribe(renderApp);
+
+	</script>
+</head>
+<body>
+	<div id="root"></div>
+</body>
+</html>

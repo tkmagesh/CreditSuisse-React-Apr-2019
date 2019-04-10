@@ -10,10 +10,14 @@ import BugEdit from './views/bugEdit';
 import BugList from './views/bugList';
 
 class BugTracker extends Component{
+	componentDidMount(){
+		this.props.load();
+	}
 	render = () => {
-		let { bugs, toggle, removeClosed, addNew } = this.props;
+		let { bugs, toggle, removeClosed, addNew} = this.props;
 		return(
 			<Fragment>
+				
 				<BugStats bugs={bugs} />
 				<BugSort />
 				<BugEdit addNew={addNew} />
@@ -24,9 +28,9 @@ class BugTracker extends Component{
 }
 
 function mapStateToBugTrackerProps(storeState){
-	let spinnerValue = storeState.spinnerData,
-		bugs = storeState.bugsData.filter((bug, index) => index % 2 === spinnerValue % 2);
-
+	/*let spinnerValue = storeState.spinnerData,
+		bugs = storeState.bugsData.filter((bug, index) => index % 2 === spinnerValue % 2);*/
+	let bugs = storeState.bugsData;
 	return { bugs : bugs };
 }
 

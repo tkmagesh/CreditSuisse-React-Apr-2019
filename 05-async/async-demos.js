@@ -55,6 +55,7 @@
 /*
 Client usage
 */
+/*
 var p = addAsyncPromise(10,20);
 
 var p2 = p.then(function(result){
@@ -88,3 +89,14 @@ var p2 = p.then(function(result){
 	var doubleResult = result * 2;
 	return doubleResult;
 })
+
+*/
+
+/*
+callback
+events
+promises
+async await
+generators
+observables
+*/

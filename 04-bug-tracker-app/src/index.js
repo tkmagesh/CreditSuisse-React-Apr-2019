@@ -8,6 +8,9 @@ import Spinner from './spinner';
 import * as serviceWorker from './serviceWorker';
 import store from './store';
 
+import axios from 'axios';
+
+window['axios'] = axios;
 
 ReactDOM.render(
 	<Provider store={store}>

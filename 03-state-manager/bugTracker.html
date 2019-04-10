@@ -55,7 +55,13 @@
 		function bugsReducer(currentState = [], action){
 			if (action.type === 'ADD_NEW'){
 				let newBug = action.payload;
-				currentState.push(newBug);
+				let newState = [...currentState, newBug];
+				return newState;
+			}
+			if (action.type === 'REPLACE'){
+				let { oldBug, newBug } = action.payload;
+				let newState = currentState.map(bug => bug === oldBug ?  newBug : bug);
+				return newState;
 			}
 			return currentState;
 		}
@@ -68,6 +74,11 @@
 				};
 				let action = { type : 'ADD_NEW', payload : newBug };
 				return action;
+			},
+			toggle(bugToToggle){
+				let toggledBug = { ...bugToToggle, isClosed : !bugToToggle.isClosed};
+				let action = { type : 'REPLACE', payload : {oldBug : bugToToggle, newBug : toggledBug} };
+				return action;
 			}
 		}
 		
@@ -78,14 +89,16 @@
 			onBugNameClick = () => {
 				/*this.props.bug.toggle();
 				console.log(this.props.bug);*/
+				this.props.toggle(this.props.bug);
 			}
 
 			render = () => {
 				let { bug } = this.props;
+				let bugStyle = 'bugname ' + (bug.isClosed ? 'closed' : '');
 				return(
 					<li>
-						<span className="bugname" onClick={this.onBugNameClick}>
-							{ JSON.stringify(bug) }
+						<span className={bugStyle} onClick={this.onBugNameClick}>
+							{ bug.name }
 						</span>
 					</li>
 				)
@@ -101,9 +114,9 @@
 			}
 			
 			render = () => {
-				let {bugs} = this.props,
+				let { bugs, toggle } = this.props,
 					bugList = bugs.map((bug, index) => (
-						<BugItem bug={bug} key={index} />
+						<BugItem bug={bug} key={index} toggle={toggle} />
 					)),
 					closedCount = bugs.reduce((result, bug) => bug.isClosed ? ++result : result, 0);
 				

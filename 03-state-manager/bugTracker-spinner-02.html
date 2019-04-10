@@ -260,6 +260,7 @@
 			return spinnerActionDispatchers;
 		}
 
+		//Container Component (or) Smart Component
 		let ConnectedSpinner = ReactRedux.connect(
 				mapStateToSpinnerProps,
 				mapDispatchToSpinnerProps
@@ -268,7 +269,21 @@
 
 		//Connect logic for BugTracker
 
-		
+		function mapStateToBugTrackerProps(storeState){
+			let bugs = storeState.bugsData;
+			return { bugs : bugs };
+		}
+
+		function mapDispatchToBugTrackerProps(dispatch){
+			let bugActionDispatchers = Redux.bindActionCreators(bugActionCreators, dispatch);	
+			return bugActionDispatchers;
+		}
+
+		//Container Component (or) Smart Component
+		let ConnectedBugTracker = ReactRedux.connect(
+				mapStateToBugTrackerProps,
+				mapDispatchToBugTrackerProps
+			)(BugTracker);
 		
 		
 		
@@ -276,7 +291,13 @@
 		
 		/* UI Rendering*/
 		ReactDOM.render(
-		{/* fill in the blanks */}
+			<ReactRedux.Provider store={store}>
+				<div>
+					<ConnectedSpinner/>
+					<hr/>
+					<ConnectedBugTracker />
+				</div>
+			</ReactRedux.Provider>,
 			document.getElementById('root'));
 		
 

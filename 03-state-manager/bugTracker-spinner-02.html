@@ -7,6 +7,7 @@
 	<script src="react-dom.development.js"></script>
 	<script src="babel.min.js"></script>
 	<script src="redux.js"></script>
+	<script src="react-redux.js"></script>
 	<style>
 		body{
 			margin-left: 50px;
@@ -54,7 +55,6 @@
 		
 		{/* Reducers */}
 		function bugsReducer(currentState = [], action){
-			console.log('bugsReducer invoked');
 			if (action.type === 'ADD_NEW'){
 				let newBug = action.payload;
 				let newState = [...currentState, newBug];
@@ -74,7 +74,6 @@
 		}
 
 		function spinnerReducer(currentState = 0, action){
-			console.log('spinnerReducer invoked');
 			if (action.type === 'INCREMENT') return currentState + action.payload;
 			if (action.type === 'DECREMENT') return currentState - action.payload;
 			if (action.type === 'DOUBLE_INCREMENT') return currentState * 2;
@@ -249,30 +248,37 @@
 
 		let store = Redux.createStore(rootReducer);
 
-		{/* Action Dispatchers */}
-		let bugActionDispatchers = Redux.bindActionCreators(bugActionCreators, store.dispatch);
-		let spinnerActionDispatchers = Redux.bindActionCreators(spinnerActionCreators, store.dispatch);
 
-		{/* Rendering */}
-		function renderApp(){
-			
-			/* Data extraction from store state */
-			let storeState = store.getState(),
-				bugs = storeState.bugsData,
-				value = storeState.spinnerData;
-			
-
-			/* UI Rendering*/
-			ReactDOM.render(
-				<div>
-					<Spinner spinnerValue={value} {...spinnerActionDispatchers} />
-					<hr/>
-					<BugTracker bugs={bugs} {...bugActionDispatchers} />
-				</div>,
-				document.getElementById('root'));
+		//Connect logic for Spinner
+		function mapStateToSpinnerProps(storeState){
+			let value = storeState.spinnerData;
+			return { spinnerValue : value };
 		}
-		store.subscribe(renderApp);
-		renderApp();
+
+		function mapDispatchToSpinnerProps(dispatch){
+			let spinnerActionDispatchers = Redux.bindActionCreators(spinnerActionCreators, dispatch);
+			return spinnerActionDispatchers;
+		}
+
+		let ConnectedSpinner = ReactRedux.connect(
+				mapStateToSpinnerProps,
+				mapDispatchToSpinnerProps
+			)(Spinner);
+
+
+		//Connect logic for BugTracker
+
+		
+		
+		
+		
+
+		
+		/* UI Rendering*/
+		ReactDOM.render(
+		{/* fill in the blanks */}
+			document.getElementById('root'));
+		
 
 	</script>
 </head>
